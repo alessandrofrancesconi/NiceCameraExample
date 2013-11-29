@@ -46,7 +46,9 @@ public class CameraPreview
 	/**
 	 * The maximum dimension (in pixels) of the preview frames that are produced 
 	 * by the Camera object. Note that this should not be intended as 
-	 * the final, exact, choose a lower value.
+	 * the final, exact, dimension because the device could not support 
+	 * it and a lower value is required (but the aspect ratio should remain the same).<br />
+	 * See {@link CameraPreview#getBestSize(List, int)} for more information.
 	 */
 	private final int PREVIEW_MAX_WIDTH = 640;
 	
