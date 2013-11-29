@@ -19,7 +19,7 @@ import android.view.SurfaceView;
 /**
  * This is the graphical object used to display a real-time preview of the Camera.
  * It MUST be an extension of the {@link SurfaceView} class.<br /> 
- * It also needs implement some other interfaces like {@link SurfaceHolder.Callback} 
+ * It also needs to implement some other interfaces like {@link SurfaceHolder.Callback} 
  * (to react to SurfaceView events) and {@link PictureCallback} (to implement
  * the {@link PictureCallback#onPictureTaken(byte[], Camera)} method).
  * @author Alessandro
@@ -40,9 +40,8 @@ public class CameraPreview
 	
 	/**
 	 * The maximum dimension (in pixels) of the preview frames that are produced 
-	 * from the Camera object. Note that this should not be intended as 
-	 * the final, exact, size because some devices may not be compatible 
-	 * with it and could select a lower value.
+	 * by the Camera object. Note that this should not be intended as 
+	 * the final, exact, choose a lower value.
 	 */
 	private final int PREVIEW_MAX_WIDTH = 640;
 	
