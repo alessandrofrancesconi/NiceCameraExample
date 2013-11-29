@@ -69,29 +69,29 @@ public class MainActivity extends Activity {
 		
 		// if the preview is set, we add it to the contents of our activity.
 		RelativeLayout preview = (RelativeLayout) findViewById(R.id.preview_layout);
-        preview.addView(this.camPreview);
+		preview.addView(this.camPreview);
         
         // also we set some layout properties
-        RelativeLayout.LayoutParams previewLayout = (RelativeLayout.LayoutParams) camPreview.getLayoutParams();
-        previewLayout.width = LayoutParams.MATCH_PARENT;
-        previewLayout.height = LayoutParams.MATCH_PARENT;
-        this.camPreview.setLayoutParams(previewLayout);
+		RelativeLayout.LayoutParams previewLayout = (RelativeLayout.LayoutParams) camPreview.getLayoutParams();
+		previewLayout.width = LayoutParams.MATCH_PARENT;
+		previewLayout.height = LayoutParams.MATCH_PARENT;
+		this.camPreview.setLayoutParams(previewLayout);
         
-        // on the main activity there's also a "capture" button, we set it's behavior
-        // when it gets clicked here
-        Button captureButton = (Button) findViewById(R.id.button_capture);
-        captureButton.setOnClickListener(
-            new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    camera.takePicture(null, null, camPreview);
-                }
-            }
-        );
+		// on the main activity there's also a "capture" button, we set it's behavior
+		// when it gets clicked here
+		Button captureButton = (Button) findViewById(R.id.button_capture);
+		captureButton.setOnClickListener(
+			new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					camera.takePicture(null, null, camPreview);
+				}
+			}
+		);
 		
-        // at last, a call to set the right layout of the elements (like the button)
-        // depending on the screen orientation (if it's changeable).
-        fixElementsPosition(getResources().getConfiguration().orientation);
+		// at last, a call to set the right layout of the elements (like the button)
+		// depending on the screen orientation (if it's changeable).
+		fixElementsPosition(getResources().getConfiguration().orientation);
 	}
 	
 	// following: a set of overwritten methods in order to start and stop the
@@ -128,12 +128,12 @@ public class MainActivity extends Activity {
 	 * method).
 	 */
 	public void onConfigurationChanged(Configuration newConfig) {
-	    super.onConfigurationChanged(newConfig);
-	    fixElementsPosition(newConfig.orientation);
+		super.onConfigurationChanged(newConfig);
+		fixElementsPosition(newConfig.orientation);
 	}
 	
 	/**
-	 * The most important method of this Activity: it asks for an instance 
+	 * [IMPORTANT!] The most important method of this Activity: it asks for an instance 
 	 * of the hardware camera(s) and save it to the private field {@link #camera}.
 	 * @return TRUE if camera is set, FALSE if something bad happens
 	 */
@@ -163,8 +163,8 @@ public class MainActivity extends Activity {
 						}
 						catch (RuntimeException e){
 							// something bad happened! this camera could be locked by other apps 
-					        Log.e(MainActivity.LOG_TAG, "setCameraInstance(): trying to open camera #" + i + " but it's locked", e);
-					    }
+							Log.e(MainActivity.LOG_TAG, "setCameraInstance(): trying to open camera #" + i + " but it's locked", e);
+						}
 					}
 				}
 			}
@@ -174,8 +174,8 @@ public class MainActivity extends Activity {
 					this.camera = Camera.open(this.cameraID);
 				}
 				catch (RuntimeException e){
-			        Log.e(MainActivity.LOG_TAG, "setCameraInstance(): trying to re-open camera #" + this.cameraID + " but it's locked", e);
-			    }
+					Log.e(MainActivity.LOG_TAG, "setCameraInstance(): trying to re-open camera #" + this.cameraID + " but it's locked", e);
+				}
 			}
 		}
 		
@@ -190,13 +190,12 @@ public class MainActivity extends Activity {
 			}
 			catch (RuntimeException e) {
 				// this is REALLY bad, the camera is definitely locked by the system.
-		        Log.e(MainActivity.LOG_TAG, 
-		        		"setCameraInstance(): trying to open default camera but it's locked. "
-		        		+ "The camera is not available for this app at the moment.", e
-		        );
-		        
-		        return false;
-		    }
+				Log.e(MainActivity.LOG_TAG, 
+					"setCameraInstance(): trying to open default camera but it's locked. "
+					+ "The camera is not available for this app at the moment.", e
+				);
+				return false;
+			}
 		}
 
 		// here, the open() went good and the camera is available
@@ -205,7 +204,7 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * Another very important method: it releases all the resources and the lock
+	 * [IMPORTANT!] Another very important method: it releases all the resources and the lock
 	 * we created while using the camera. It MUST be called everytime the app exits, crashes, 
 	 * is paused or whatever. The order of the called methods are the following: <br />
 	 * 
@@ -216,11 +215,11 @@ public class MainActivity extends Activity {
 	private void releaseCameraInstance() {
 		if (this.camera != null) {
 			try {
-        		this.camera.stopPreview();
-        	}
-        	catch (Exception e) {
-        		Log.i(MainActivity.LOG_TAG, "unsetCameraInstance(): tried to stop a non-existent preview, this is not an error");
-        	}
+				this.camera.stopPreview();
+			}
+			catch (Exception e) {
+				Log.i(MainActivity.LOG_TAG, "unsetCameraInstance(): tried to stop a non-existent preview, this is not an error");
+			}
 			
 			this.camera.setPreviewCallback(null);
 			this.camera.release();
@@ -239,11 +238,11 @@ public class MainActivity extends Activity {
 		Button captureButton = (Button)findViewById(R.id.button_capture);
 		FrameLayout.LayoutParams layout = (FrameLayout.LayoutParams) captureButton.getLayoutParams();
 	    
-	    switch(orientation) {
-		    case Configuration.ORIENTATION_LANDSCAPE: 
-		    	layout.gravity = (Gravity.RIGHT | Gravity.CENTER); break;
-		    case Configuration.ORIENTATION_PORTRAIT: 
-		    	layout.gravity = (Gravity.BOTTOM | Gravity.CENTER); break;
-	    }
+		switch(orientation) {
+			case Configuration.ORIENTATION_LANDSCAPE: 
+				layout.gravity = (Gravity.RIGHT | Gravity.CENTER); break;
+			case Configuration.ORIENTATION_PORTRAIT: 
+				layout.gravity = (Gravity.BOTTOM | Gravity.CENTER); break;
+		}
 	}
 }

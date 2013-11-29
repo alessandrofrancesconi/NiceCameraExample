@@ -22,7 +22,7 @@ import android.view.SurfaceView;
  * It also needs to implement some other interfaces like {@link SurfaceHolder.Callback} 
  * (to react to SurfaceView events) and {@link PictureCallback} (to implement
  * the {@link PictureCallback#onPictureTaken(byte[], Camera)} method).
- * @author Alessandro
+ * @author alessandrofrancesconi
  *
  */
 public class CameraPreview 
@@ -100,7 +100,7 @@ public class CameraPreview
 	}
 
 	/**
-	 * A SurfaceChanged event means that the parent graphic has changed its layout 
+	 * [IMPORTANT!] A SurfaceChanged event means that the parent graphic has changed its layout 
 	 * (for example when the orientation changes). It's necessary to update the {@link CameraPreview}
 	 * orientation, so the preview is stopped, then updated, then re-activated.
 	 * @param holder The SurfaceHolder whose surface has changed
@@ -110,20 +110,20 @@ public class CameraPreview
 	 */
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
-        if (this.surfaceHolder.getSurface() == null) {
+		if (this.surfaceHolder.getSurface() == null) {
         	Log.e(MainActivity.LOG_TAG, "surfaceChanged(): surfaceHolder is null, nothing to do.");
-            return;
-        }
-
-        // stop preview before making changes!
+    		return;
+		}
+		
+		// stop preview before making changes!
 		stopCameraPreview();
 
-        // set preview size and make any resize, rotate or
-        // reformatting changes here
-        updateCameraDisplayOrientation();
+		// set preview size and make any resize, rotate or
+		// reformatting changes here
+		updateCameraDisplayOrientation();
 
-        // restart preview with new settings
-        startCameraPreview(holder);
+		// restart preview with new settings
+		startCameraPreview(holder);
 	}
 
 	/**
@@ -135,7 +135,7 @@ public class CameraPreview
 	public void surfaceDestroyed(SurfaceHolder holder) { }
 	
 	/**
-	 * Probably the most important method here. Lots of users experience bad 
+	 * [IMPORTANT!] Probably the most important method here. Lots of users experience bad 
 	 * camera behaviors because they don't override this guy.
 	 * In fact, some Android devices are very strict about the size of the surface 
 	 * where the preview is printed: if its ratio is different from the 
@@ -146,21 +146,21 @@ public class CameraPreview
 	 * @param heightMeasureSpec vertical space requirements as imposed by the parent.  
 	 */
 	@Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int height = MeasureSpec.getSize(heightMeasureSpec);
-        int width = MeasureSpec.getSize(widthMeasureSpec);
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		int height = MeasureSpec.getSize(heightMeasureSpec);
+		int width = MeasureSpec.getSize(widthMeasureSpec);
 
-        // do some ultra high precision math...
-        float ratio = ASPECT_RATIO_H / ASPECT_RATIO_W;
-        if (width > height * ratio) {
-        	width = (int) (height / ratio + .5);
-        } else {
-            height = (int) (width / ratio + .5);
-        }
+		// do some ultra high precision math...
+		float ratio = ASPECT_RATIO_H / ASPECT_RATIO_W;
+		if (width > height * ratio) {
+			width = (int) (height / ratio + .5);
+		} else {
+			height = (int) (width / ratio + .5);
+		}
 
-        setMeasuredDimension(width, height);
-        Log.i(MainActivity.LOG_TAG, "onMeasure(): set surface dimension to " + width + "x" + height);
-    }
+		setMeasuredDimension(width, height);
+		Log.i(MainActivity.LOG_TAG, "onMeasure(): set surface dimension to " + width + "x" + height);
+	}
 	
 	/**
 	 * It sets all the required parameters for the Camera object, like preview
@@ -173,18 +173,18 @@ public class CameraPreview
     		return;
 		}
 		
-        Camera.Parameters parameters = this.camera.getParameters();
+		Camera.Parameters parameters = this.camera.getParameters();
 
-        Size bestPreviewSize = getBestPreviewSize(parameters);
-        Size bestPictureSize = getBestPictureSize(parameters);
+		Size bestPreviewSize = getBestPreviewSize(parameters);
+		Size bestPictureSize = getBestPictureSize(parameters);
 
-        parameters.setPreviewSize(bestPreviewSize.width, bestPreviewSize.height);
-        parameters.setPictureSize(bestPictureSize.width, bestPictureSize.height);
+		parameters.setPreviewSize(bestPreviewSize.width, bestPreviewSize.height);
+		parameters.setPictureSize(bestPictureSize.width, bestPictureSize.height);
 
-        parameters.setPreviewFormat(ImageFormat.NV21); // NV21 is the most supported format for preview frames
-        parameters.setPictureFormat(ImageFormat.JPEG); // JPEG for full resolution images
+		parameters.setPreviewFormat(ImageFormat.NV21); // NV21 is the most supported format for preview frames
+		parameters.setPictureFormat(ImageFormat.JPEG); // JPEG for full resolution images
         
-        // example of settings
+		// example of settings
 		try {
 			parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
 		}
@@ -215,11 +215,11 @@ public class CameraPreview
 		} catch (IOException e) {
 			Log.e(MainActivity.LOG_TAG, "setupCamera(): error setting camera callback.", e);
 		}
-    }
+	}
 
 	/**
-	 * Sets the {@link #previewBuffer} to be the default buffer where the 
-	 * preview frames will be copied. Also sets the function that will be called 
+	 * [IMPORTANT!] Sets the {@link #previewBuffer} to be the default buffer where the 
+	 * preview frames will be copied. Also sets the callback function 
 	 * when a frame is ready.
 	 * @throws IOException
 	 */
@@ -234,83 +234,113 @@ public class CameraPreview
 		});
 	}
 	
+	/**
+	 * Just a call to {@link CameraPreview#getBestSize(List, int)} for 
+	 * the preview size
+	 * @param parameters parameters of the camera
+	 * @return an optimal size
+	 */
 	private Size getBestPreviewSize(Camera.Parameters parameters) {
-        List<Size> sizes = parameters.getSupportedPreviewSizes();
-        return getBestSize(sizes, PREVIEW_MAX_WIDTH);
-    }
+		List<Size> sizes = parameters.getSupportedPreviewSizes();
+		return getBestSize(sizes, PREVIEW_MAX_WIDTH);
+	}
 
-    private Size getBestPictureSize(Camera.Parameters parameters) {
-        List<Size> sizes = parameters.getSupportedPictureSizes();
-        return getBestSize(sizes, PICTURE_MAX_WIDTH);
-    }
+	/**
+	 * Just a call to {@link CameraPreview#getBestSize(List, int)} for 
+	 * the full-resolution picture size
+	 * @param parameters parameters of the camera
+	 * @return an optimal size
+	 */
+	private Size getBestPictureSize(Camera.Parameters parameters) {
+		List<Size> sizes = parameters.getSupportedPictureSizes();
+		return getBestSize(sizes, PICTURE_MAX_WIDTH);
+	}
 
     /**
-     * 
-     * @param sizes
-     * @param widthThreshold
-     * @return
+     * [IMPORTANT!] This is a convenient function to determine what's the proper
+     * preview/picture size to be assigned to the camera, by looking at 
+     * the list of supported sizes and the maximum value given
+     * @param sizes sizes that are currently supported by the camera hardware,
+     * retrived with {@link Camera.Parameters#getSupportedPictureSizes()} or {@link Camera.Parameters#getSupportedPreviewSizes()}
+     * @param widthThreshold the maximum value we want to apply
+     * @return an optimal size <= widthThreshold
      */
     private Size getBestSize(List<Size> sizes, int widthThreshold) {
-        Size bestSize = null;
+    	Size bestSize = null;
 
-        for (Size currentSize : sizes) {
-            boolean isDesiredRatio = ((currentSize.width / ASPECT_RATIO_W) == (currentSize.height / ASPECT_RATIO_H));
-            boolean isBetterSize = (bestSize == null || currentSize.width > bestSize.width);
-            boolean isInBounds = currentSize.width <= widthThreshold;
+    	for (Size currentSize : sizes) {
+    		boolean isDesiredRatio = ((currentSize.width / ASPECT_RATIO_W) == (currentSize.height / ASPECT_RATIO_H));
+    		boolean isBetterSize = (bestSize == null || currentSize.width > bestSize.width);
+    		boolean isInBounds = currentSize.width <= widthThreshold;
 
-            if (isDesiredRatio && isInBounds && isBetterSize) {
-                bestSize = currentSize;
-            }
-        }
+    		if (isDesiredRatio && isInBounds && isBetterSize) {
+    			bestSize = currentSize;
+    		}
+    	}
 
-        if (bestSize == null) {
-        	bestSize = sizes.get(0);
-        	Log.e(MainActivity.LOG_TAG, "determineBestSize(): can't find a good size. Setting to the very first...");
-        }
+    	if (bestSize == null) {
+    		bestSize = sizes.get(0);
+    		Log.e(MainActivity.LOG_TAG, "determineBestSize(): can't find a good size. Setting to the very first...");
+    	}
         
-        Log.i(MainActivity.LOG_TAG, "determineBestSize(): bestSize is " + bestSize.width + "x" + bestSize.height);
-        return bestSize;
-    }
+    	Log.i(MainActivity.LOG_TAG, "determineBestSize(): bestSize is " + bestSize.width + "x" + bestSize.height);
+    	return bestSize;
+	}
 	
+    /**
+     * In addition to calling {@link Camera#startPreview()}, it also 
+     * updates the preview display that could be changed in some situations
+     * @param holder the current {@link SurfaceHolder}
+     */
 	private synchronized void startCameraPreview(SurfaceHolder holder) {
 		try {
-        	this.camera.setPreviewDisplay(holder);
-        	this.camera.startPreview();
-    	} catch (Exception e){
-    		Log.e(MainActivity.LOG_TAG, "startCameraPreview(): error starting camera preview", e);
-        }
+			this.camera.setPreviewDisplay(holder);
+			this.camera.startPreview();
+		} catch (Exception e){
+			Log.e(MainActivity.LOG_TAG, "startCameraPreview(): error starting camera preview", e);
+		}
 	}
 	
+	/**
+	 * It "simply" calls {@link Camera#stopPreview()} and checks
+	 * for errors
+	 */
 	private synchronized void stopCameraPreview() {
 		try {
-        	this.camera.stopPreview();
-        } catch (Exception e){
-        	// ignored: tried to stop a non-existent preview
-        	Log.i(MainActivity.LOG_TAG, "stopCameraPreview(): tried to stop a non-running preview, this is not an error");
-        }
+			this.camera.stopPreview();
+		} catch (Exception e){
+			// ignored: tried to stop a non-existent preview
+			Log.i(MainActivity.LOG_TAG, "stopCameraPreview(): tried to stop a non-running preview, this is not an error");
+		}
 	}
 	
-    private void updateCameraDisplayOrientation() {
-    	if (this.camera == null) {
-    		Log.e(MainActivity.LOG_TAG, "updateCameraDisplayOrientation(): warning, camera is null");
+	/**
+	 * Gets the current screen rotation in order to understand how much 
+	 * the surface needs to be rotated
+	 */
+	private void updateCameraDisplayOrientation() {
+		if (this.camera == null) {
+			Log.e(MainActivity.LOG_TAG, "updateCameraDisplayOrientation(): warning, camera is null");
     		return;
-    	}
-    	
-    	int result = 0;
-    	Activity parentActivity = (Activity)this.getContext();
-    	
-    	int rotation = parentActivity.getWindowManager().getDefaultDisplay().getRotation();
-    	int degrees = 0;
-    	switch (rotation) {
-		    case Surface.ROTATION_0: degrees = 0; break;
-		    case Surface.ROTATION_90: degrees = 90; break;
-		    case Surface.ROTATION_180: degrees = 180; break;
-		    case Surface.ROTATION_270: degrees = 270; break;
 		}
     	
-    	if (Build.VERSION.SDK_INT >= 9) {
-	    	Camera.CameraInfo info = new Camera.CameraInfo();
-	    	Camera.getCameraInfo(this.cameraID, info);
+		int result = 0;
+		Activity parentActivity = (Activity)this.getContext();
+    	
+		int rotation = parentActivity.getWindowManager().getDefaultDisplay().getRotation();
+		int degrees = 0;
+		switch (rotation) {
+			case Surface.ROTATION_0: degrees = 0; break;
+			case Surface.ROTATION_90: degrees = 90; break;
+			case Surface.ROTATION_180: degrees = 180; break;
+			case Surface.ROTATION_270: degrees = 270; break;
+		}
+    	
+		if (Build.VERSION.SDK_INT >= 9) {
+			// on >= API 9 we can proceed with the CameraInfo method
+			// and also we have to keep in mind that the camera could be the front one 
+			Camera.CameraInfo info = new Camera.CameraInfo();
+			Camera.getCameraInfo(this.cameraID, info);
 		
 			if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
 				result = (info.orientation + degrees) % 360;
@@ -318,25 +348,36 @@ public class CameraPreview
 			} 
 			else {  
 				// back-facing
-		        result = (info.orientation - degrees + 360) % 360;
-		    }
-    	}
-    	else {
-    		result = Math.abs(degrees - 90);
-    	}
+				result = (info.orientation - degrees + 360) % 360;
+			}
+		}
+		else {
+			// TODO: on the majority of API 8 devices, this trick works good 
+			// and doesn't produce an upside-down preview.
+			// ... but there is a small amount of devices that don't like it!
+			result = Math.abs(degrees - 90);
+		}
 		
-	    this.camera.setDisplayOrientation(result);
+		this.camera.setDisplayOrientation(result); // save settings
 	}
     
 	@Override
 	public void onPictureTaken(byte[] raw, Camera cam) {
-		// TODO Auto-generated method stub
 		Log.i(MainActivity.LOG_TAG, "onPictureTaken(): raw image is " + raw.length + " bytes long");
 	}
 	
+	/**
+	 * [IMPORTANT!] It's the callback that's fired when a preview frame is ready. Here
+	 * we can do some real-time analysis of the preview's contents.
+	 * Just remember that the buffer array is a list of pixels represented in 
+	 * Y'UV420sp (NV21) format, so you could have to convert it to RGB before.
+	 * 
+	 * @param raw the preview buffer
+	 * @param cam the camera that filled the buffer
+	 * @see <a href="http://en.wikipedia.org/wiki/YUV#Y.27UV420sp_.28NV21.29_to_ARGB8888_conversion">YUV Conversion - Wikipedia</a>
+	 */
 	private void processFrame(byte[] raw, Camera cam) {
-		// TODO Auto-generated method stub
-		
+		// TODO: insert a good YUV->RGB conversion algorithm?
 	}
 
 }
