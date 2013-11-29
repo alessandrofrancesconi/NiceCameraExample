@@ -71,20 +71,20 @@ public class MainActivity extends Activity {
 		RelativeLayout preview = (RelativeLayout) findViewById(R.id.preview_layout);
 		preview.addView(this.camPreview);
         
-        // also we set some layout properties
+		// also we set some layout properties
 		RelativeLayout.LayoutParams previewLayout = (RelativeLayout.LayoutParams) camPreview.getLayoutParams();
 		previewLayout.width = LayoutParams.MATCH_PARENT;
 		previewLayout.height = LayoutParams.MATCH_PARENT;
 		this.camPreview.setLayoutParams(previewLayout);
         
-		// on the main activity there's also a "capture" button, we set it's behavior
+		// on the main activity there's also a "capture" button, we set its behavior
 		// when it gets clicked here
 		Button captureButton = (Button) findViewById(R.id.button_capture);
 		captureButton.setOnClickListener(
 			new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					camera.takePicture(null, null, camPreview);
+					camera.takePicture(null, null, camPreview); // request a picture
 				}
 			}
 		);
