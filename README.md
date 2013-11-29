@@ -6,7 +6,7 @@ blowed up when trying to understand how things like CameraPreview, startPreview(
 addCallbackBuffer() work.
 
 Every single step forward generated a different error... sometimes was my fault... but a 
-big contribution came from the **[offical documentation](http://developer.android.com/guide/topics/media/camera.html#custom-camera)**.
+big contribution came from the **[official documentation](http://developer.android.com/guide/topics/media/camera.html#custom-camera)**.
 
 What's wrong with it? 
 ---------------------
