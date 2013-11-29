@@ -11,7 +11,7 @@ big contribution came from the **[official documentation](http://developer.andro
 What's wrong with it? 
 ---------------------
 At least in the November 2013's version, the authors offered a very nice explanation 
-of SOME aspects of a Camera app development, but some information were missing. 
+of SOME aspects of a Camera app development, but some other information were missing. 
 In fact, if you try to follow the tutorial step by step, you'll probably end with an 
 app that works good on a 5% of the total amount of Android devices in the world. 
 Not so good, really.
