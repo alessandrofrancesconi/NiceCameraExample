@@ -20,11 +20,12 @@ So what?
 --------
 
 So I decided to make a "custom" guide to this subject, without HTML pages but directly 
-with a working project. I can't guarantee that it's 100% good, but surely it's a good starting 
+with a working Eclipse project. I can't guarantee that it's 100% good, but surely it's a good starting 
 point and obviously everyone can make it better by fixing some mistakes that came from my keyboard.
 
 The project is intended to demonstrate how a basic Camera app should be, and also:
 * to describe some key-methods to watch a Camera preview on different screen formats
+* to describe how to make it so that it's supported from API 8
 * to set the starting point for real-time preview buffers interaction.
 
 How can I help you?
