@@ -287,11 +287,11 @@ public class CameraPreview
     	return bestSize;
 	}
 	
-    /**
-     * In addition to calling {@link Camera#startPreview()}, it also 
-     * updates the preview display that could be changed in some situations
-     * @param holder the current {@link SurfaceHolder}
-     */
+	/**
+	 * In addition to calling {@link Camera#startPreview()}, it also 
+	 * updates the preview display that could be changed in some situations
+	 * @param holder the current {@link SurfaceHolder}
+	 */
 	private synchronized void startCameraPreview(SurfaceHolder holder) {
 		try {
 			this.camera.setPreviewDisplay(holder);
