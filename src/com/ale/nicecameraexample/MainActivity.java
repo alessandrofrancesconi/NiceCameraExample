@@ -204,7 +204,7 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * [IMPORTANT!] Another very important method: it releases all the resources and the lock
+	 * [IMPORTANT!] Another very important method: it releases all the resources and the locks
 	 * we created while using the camera. It MUST be called everytime the app exits, crashes, 
 	 * is paused or whatever. The order of the called methods are the following: <br />
 	 * 
@@ -218,14 +218,14 @@ public class MainActivity extends Activity {
 				this.camera.stopPreview();
 			}
 			catch (Exception e) {
-				Log.i(MainActivity.LOG_TAG, "unsetCameraInstance(): tried to stop a non-existent preview, this is not an error");
+				Log.i(MainActivity.LOG_TAG, "releaseCameraInstance(): tried to stop a non-existent preview, this is not an error");
 			}
 			
 			this.camera.setPreviewCallback(null);
 			this.camera.release();
 			this.camera = null;
 			this.cameraID = -1;
-			Log.i(MainActivity.LOG_TAG, "unsetCameraInstance(): camera has been released.");
+			Log.i(MainActivity.LOG_TAG, "releaseCameraInstance(): camera has been released.");
 		}
 	}
 	
