@@ -5,16 +5,21 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
+import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.PreviewCallback;
 import android.hardware.Camera.Size;
 import android.os.Build;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Toast;
 
 /**
  * This is the graphical object used to display a real-time preview of the Camera.
@@ -364,6 +369,34 @@ public class CameraPreview
 	@Override
 	public void onPictureTaken(byte[] raw, Camera cam) {
 		Log.i(MainActivity.LOG_TAG, "onPictureTaken(): raw image is " + raw.length + " bytes long");
+		
+		stopCameraPreview(); // better do that because we don't need a preview right now
+		
+		// create a Bitmap from the raw data
+		Bitmap picture = BitmapFactory.decodeByteArray(raw, 0, raw.length);
+		
+		// [IMPORTANT!] the image contained in the raw array is ALWAYS in landscape orientation.
+		// We detect if the user took the picture in portrait mode and rotate it accordingly.
+		Activity parentActivity = (Activity)this.getContext();
+		int rotation = parentActivity.getWindowManager().getDefaultDisplay().getRotation();
+		if (rotation == Surface.ROTATION_0 || rotation == Surface.ROTATION_180) {
+			Matrix matrix = new Matrix();
+			matrix.postRotate(90);
+			// create a rotated version and replace the original bitmap
+			picture = Bitmap.createBitmap(picture, 0, 0, picture.getWidth(), picture.getHeight(), matrix, true);
+		}
+		
+		// save to media library
+		MediaStore.Images.Media.insertImage(parentActivity.getContentResolver(), picture, "NiceCameraExample", "NiceCameraExample test");
+		
+		// show a message
+		Toast toast = Toast.makeText(parentActivity, "Picture saved to the media library", Toast.LENGTH_LONG);
+		toast.show();
+		
+		// [IMPORTANT!] after the onPictureTaken event, the preview stream automatically stops.
+		// You could navigate to another Activity, but in this example we just reset the
+		// camera preview and continue
+		startCameraPreview(this.surfaceHolder);
 	}
 	
 	/**

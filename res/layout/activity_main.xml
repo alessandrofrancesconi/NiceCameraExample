@@ -9,13 +9,11 @@
     	android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-    >
-        <!-- Where is the CameraPreview object? It's added dynamically 
-             from the code (see MainActivity's onCreate() method) only 
-             when the camera is enabled -->
+    />
+    <!-- Where is the CameraPreview object? It's added dynamically 
+         from the code (see MainActivity's onCreate() method) only 
+         when the camera is enabled -->
              
-    </RelativeLayouts>
-    
     <!-- the snap button -->
     <Button
     	android:id="@+id/button_capture"

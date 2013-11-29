@@ -12,6 +12,10 @@
     <!-- The following are the very basic permissions to enable in order to use hardware.Camera -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera" />
+    
+    <!-- This is needed only for image saving purposes: some devices automatically save pictures in 
+    	 the external storage -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> 
 
     <application
         android:allowBackup="true"
