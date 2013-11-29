@@ -378,7 +378,7 @@ public class CameraPreview
 		// create a Bitmap from the raw data
 		Bitmap picture = BitmapFactory.decodeByteArray(raw, 0, raw.length);
 		
-		// [IMPORTANT!] the image contained in the raw array is ALWAYS in landscape orientation.
+		// [IMPORTANT!] the image contained in the raw array is ALWAYS landscape-oriented.
 		// We detect if the user took the picture in portrait mode and rotate it accordingly.
 		Activity parentActivity = (Activity)this.getContext();
 		int rotation = parentActivity.getWindowManager().getDefaultDisplay().getRotation();
@@ -407,6 +407,8 @@ public class CameraPreview
 	 * we can do some real-time analysis of the preview's contents.
 	 * Just remember that the buffer array is a list of pixels represented in 
 	 * Y'UV420sp (NV21) format, so you could have to convert it to RGB before.
+	 * Also, as in {@link #onPictureTaken(byte[], Camera)}, the raw image is always 
+	 * landscape-oriented, even if the phone was in portrait mode.
 	 * 
 	 * @param raw the preview buffer
 	 * @param cam the camera that filled the buffer
