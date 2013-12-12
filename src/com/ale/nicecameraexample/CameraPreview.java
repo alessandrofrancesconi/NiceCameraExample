@@ -182,8 +182,8 @@ public class CameraPreview
 		
 		Camera.Parameters parameters = this.camera.getParameters();
 
-		Size bestPreviewSize = getBestPreviewSize(parameters);
-		Size bestPictureSize = getBestPictureSize(parameters);
+		Size bestPreviewSize = getBestSize(parameters.getSupportedPreviewSizes(), PREVIEW_MAX_WIDTH);
+		Size bestPictureSize = getBestSize(parameters.getSupportedPictureSizes(), PICTURE_MAX_WIDTH);
 
 		parameters.setPreviewSize(bestPreviewSize.width, bestPreviewSize.height);
 		parameters.setPictureSize(bestPictureSize.width, bestPictureSize.height);
@@ -244,28 +244,6 @@ public class CameraPreview
 		});
 	}
 	
-	/**
-	 * Just a call to {@link CameraPreview#getBestSize(List, int)} for 
-	 * the preview size
-	 * @param parameters parameters of the camera
-	 * @return an optimal size
-	 */
-	private Size getBestPreviewSize(Camera.Parameters parameters) {
-		List<Size> sizes = parameters.getSupportedPreviewSizes();
-		return getBestSize(sizes, PREVIEW_MAX_WIDTH);
-	}
-
-	/**
-	 * Just a call to {@link CameraPreview#getBestSize(List, int)} for 
-	 * the full-resolution picture size
-	 * @param parameters parameters of the camera
-	 * @return an optimal size
-	 */
-	private Size getBestPictureSize(Camera.Parameters parameters) {
-		List<Size> sizes = parameters.getSupportedPictureSizes();
-		return getBestSize(sizes, PICTURE_MAX_WIDTH);
-	}
-
     /**
      * [IMPORTANT!] This is a convenient function to determine what's the proper
      * preview/picture size to be assigned to the camera, by looking at 
