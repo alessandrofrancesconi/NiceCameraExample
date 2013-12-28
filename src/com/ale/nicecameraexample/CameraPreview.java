@@ -60,11 +60,6 @@ public class CameraPreview
 	 */
 	private final int PICTURE_MAX_WIDTH = 1280;
 	
-	// following: a simple reference of the camera object and cameraID value
-	// that were previously defined in MainActivity
-	private Camera camera;
-	private int cameraID;
-	
 	/**
 	 * In this example we look at camera preview buffer functionality too.<br />
 	 * This is the array that will be filled everytime a single preview frame is 
@@ -82,9 +77,6 @@ public class CameraPreview
 	@SuppressWarnings("deprecation")
 	public CameraPreview(Context context, Camera cam, int camID) {
 		super(context);
-		
-		this.camera = cam;
-		this.cameraID = camID;
 		
 		surfaceHolder = this.getHolder();
 		surfaceHolder.addCallback(this);
@@ -175,12 +167,19 @@ public class CameraPreview
 	 * In this particular example it initializes the {@link #previewBuffer} too.
 	 */
 	private void setupCamera() {
-		if (this.camera == null) {
+		
+		// Get the camera object directly from the parent activity
+		// This is safe and doesn't throw NullPointerException or "camera has been released"
+		// when resuming from a paused state, because it always takes the latest camera instance
+		MainActivity parent = (MainActivity)this.getContext();
+		Camera camera = parent.getCamera();
+		
+		if (camera == null) {
 			Log.e(MainActivity.LOG_TAG, "setupCamera(): warning, camera is null");
     		return;
 		}
 		
-		Camera.Parameters parameters = this.camera.getParameters();
+		Camera.Parameters parameters = camera.getParameters();
 
 		Size bestPreviewSize = getBestSize(parameters.getSupportedPreviewSizes(), PREVIEW_MAX_WIDTH);
 		Size bestPictureSize = getBestSize(parameters.getSupportedPictureSizes(), PICTURE_MAX_WIDTH);
@@ -200,13 +199,13 @@ public class CameraPreview
 			Log.e(MainActivity.LOG_TAG, "setupCamera(): this camera ignored some unsupported settings.", e);
 		}
 		
-		this.camera.setParameters(parameters); // save everything
+		camera.setParameters(parameters); // save everything
 		
 		// print saved parameters
-		int prevWidth = this.camera.getParameters().getPreviewSize().width;
-		int prevHeight = this.camera.getParameters().getPreviewSize().height;
-		int picWidth = this.camera.getParameters().getPictureSize().width;
-		int picHeight = this.camera.getParameters().getPictureSize().height;
+		int prevWidth = camera.getParameters().getPreviewSize().width;
+		int prevHeight = camera.getParameters().getPreviewSize().height;
+		int picWidth = camera.getParameters().getPictureSize().width;
+		int picHeight = camera.getParameters().getPictureSize().height;
 
 		Log.d(MainActivity.LOG_TAG, "setupCamera(): settings applied:\n\t"
 			+ "preview size: " + prevWidth + "x" + prevHeight + "\n\t"
@@ -217,7 +216,7 @@ public class CameraPreview
 		// from the preview, so it must be big enough.
 		// After that, it's linked to the camera with the setCameraCallback() method.
 		try {
-			this.previewBuffer = new byte[prevWidth * prevHeight * ImageFormat.getBitsPerPixel(this.camera.getParameters().getPreviewFormat()) / 8];
+			this.previewBuffer = new byte[prevWidth * prevHeight * ImageFormat.getBitsPerPixel(camera.getParameters().getPreviewFormat()) / 8];
 			setCameraCallback();
 		} catch (IOException e) {
 			Log.e(MainActivity.LOG_TAG, "setupCamera(): error setting camera callback.", e);
@@ -231,8 +230,11 @@ public class CameraPreview
 	 * @throws IOException
 	 */
 	private void setCameraCallback() throws IOException {
-		this.camera.addCallbackBuffer(this.previewBuffer);
-		this.camera.setPreviewCallbackWithBuffer(new PreviewCallback() {
+		MainActivity parent = (MainActivity)this.getContext();
+		Camera camera = parent.getCamera();
+		
+		camera.addCallbackBuffer(this.previewBuffer);
+		camera.setPreviewCallbackWithBuffer(new PreviewCallback() {
 			@Override
 			public void onPreviewFrame(byte[] data, Camera cam) {
 				processFrame(previewBuffer, cam);
@@ -281,9 +283,12 @@ public class CameraPreview
 	 * @param holder the current {@link SurfaceHolder}
 	 */
 	private synchronized void startCameraPreview(SurfaceHolder holder) {
+		MainActivity parent = (MainActivity)this.getContext();
+		Camera camera = parent.getCamera();
+		
 		try {
-			this.camera.setPreviewDisplay(holder);
-			this.camera.startPreview();
+			camera.setPreviewDisplay(holder);
+			camera.startPreview();
 		} catch (Exception e){
 			Log.e(MainActivity.LOG_TAG, "startCameraPreview(): error starting camera preview", e);
 		}
@@ -294,8 +299,11 @@ public class CameraPreview
 	 * for errors
 	 */
 	private synchronized void stopCameraPreview() {
+		MainActivity parent = (MainActivity)this.getContext();
+		Camera camera = parent.getCamera();
+		
 		try {
-			this.camera.stopPreview();
+			camera.stopPreview();
 		} catch (Exception e){
 			// ignored: tried to stop a non-existent preview
 			Log.i(MainActivity.LOG_TAG, "stopCameraPreview(): tried to stop a non-running preview, this is not an error");
@@ -307,7 +315,11 @@ public class CameraPreview
 	 * the surface needs to be rotated
 	 */
 	private void updateCameraDisplayOrientation() {
-		if (this.camera == null) {
+		MainActivity parent = (MainActivity)this.getContext();
+		Camera camera = parent.getCamera();
+		int cameraID = parent.getCameraID();
+		
+		if (camera == null) {
 			Log.e(MainActivity.LOG_TAG, "updateCameraDisplayOrientation(): warning, camera is null");
     		return;
 		}
@@ -328,7 +340,7 @@ public class CameraPreview
 			// on >= API 9 we can proceed with the CameraInfo method
 			// and also we have to keep in mind that the camera could be the front one 
 			Camera.CameraInfo info = new Camera.CameraInfo();
-			Camera.getCameraInfo(this.cameraID, info);
+			Camera.getCameraInfo(cameraID, info);
 		
 			if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
 				result = (info.orientation + degrees) % 360;
@@ -346,7 +358,7 @@ public class CameraPreview
 			result = Math.abs(degrees - 90);
 		}
 		
-		this.camera.setDisplayOrientation(result); // save settings
+		camera.setDisplayOrientation(result); // save settings
 	}
     
 	@Override

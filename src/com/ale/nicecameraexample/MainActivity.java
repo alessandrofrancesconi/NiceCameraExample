@@ -245,4 +245,14 @@ public class MainActivity extends Activity {
 				layout.gravity = (Gravity.BOTTOM | Gravity.CENTER); break;
 		}
 	}
+
+	public Camera getCamera() {
+		// TODO Auto-generated method stub
+		return this.camera;
+	}
+	
+	public int getCameraID() {
+		// TODO Auto-generated method stub
+		return this.cameraID;
+	}
 }
