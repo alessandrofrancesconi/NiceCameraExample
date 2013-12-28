@@ -247,12 +247,10 @@ public class MainActivity extends Activity {
 	}
 
 	public Camera getCamera() {
-		// TODO Auto-generated method stub
 		return this.camera;
 	}
 	
 	public int getCameraID() {
-		// TODO Auto-generated method stub
 		return this.cameraID;
 	}
 }
