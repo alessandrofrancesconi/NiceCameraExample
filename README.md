@@ -37,6 +37,6 @@ it and try to fix what's going wrong. Please remember some little guidelines:
 
 1. Always write a good documentation before commit
 2. Don't add new functionalities that could just make the project more complicated, leave it simple!
-3. [Tell me](mailto:alessandrofrancesconi@live.it) if I made some coding errors and where are they.
+3. [Tell me](https://github.com/alessandrofrancesconi/NiceCameraExample/issues) if I made some coding errors and where are they.
 
 Enjoy!
